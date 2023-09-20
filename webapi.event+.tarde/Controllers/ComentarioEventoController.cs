@@ -8,31 +8,28 @@ namespace webapi.event_.tarde.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Produces("application/json")]
-    public class TipoUsuarioController : ControllerBase
+    [Produces("application/json")]  
+    public class ComentarioEventoController : ControllerBase
     {
-        private ITipoUsuarioRepository _tipoUsuarioRepository { get; set; }
+        private IComentarioEventoRepository _comentarioEventoRepository;
 
-        public TipoUsuarioController()
+        public ComentarioEventoController()
         {
-            _tipoUsuarioRepository = new TipoUsuarioRepository();
+            _comentarioEventoRepository = new ComentarioEventoRepository();
         }
 
-
-        [HttpPost]
-
-        public IActionResult Post(TipoUsuario tipoUsuario)
+        [HttpGet]
+        public IActionResult Get()
         {
             try
             {
-                _tipoUsuarioRepository.Cadastrar(tipoUsuario);
 
-                return StatusCode(201);
+                return Ok(_comentarioEventoRepository.Listar());
             }
-            catch (Exception e)
+            catch (Exception erro)
             {
 
-                return BadRequest(e.Message);
+                return BadRequest(erro.Message);
             }
         }
 
@@ -42,7 +39,7 @@ namespace webapi.event_.tarde.Controllers
         {
             try
             {
-                _tipoUsuarioRepository.Deletar(id);
+                _comentarioEventoRepository.Deletar(id);
 
                 return NoContent();
             }
@@ -54,28 +51,29 @@ namespace webapi.event_.tarde.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        public IActionResult Put(Guid id, TipoUsuario tipoUsuario)
+        [HttpPost]
+        public IActionResult Post(ComentarioEvento comentarioEvento)
         {
             try
             {
-                _tipoUsuarioRepository.Atualizar(id, tipoUsuario);
+                _comentarioEventoRepository.Cadastrar(comentarioEvento);
 
-                return NoContent();
+                // 201 - Created!
+                return StatusCode(201);
             }
             catch (Exception erro)
             {
+
                 return BadRequest(erro.Message);
             }
         }
-
 
         [HttpGet("{id}")]
         public IActionResult GetById(Guid id)
         {
             try
             {
-                return Ok(_tipoUsuarioRepository.BuscarPorId(id));
+                return Ok(_comentarioEventoRepository.BuscarPorId(id));
             }
             catch (Exception e)
             {
@@ -84,4 +82,3 @@ namespace webapi.event_.tarde.Controllers
         }
     }
 }
-

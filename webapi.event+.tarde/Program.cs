@@ -28,7 +28,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
 
         //forma de criptografia e valida a chave de autenticação
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("event-chave-autenticacao-webapi-dev")),
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("projeto-event-webapi-chave-autenticacao-ef")),
 
         //valida o tempo de expiração do token
         ClockSkew = TimeSpan.FromMinutes(5),
@@ -49,8 +49,8 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "API Inlock Games",
-        Description = "API for game and studio management - Inlock Games - Backend API",
+        Title = "API Event+",
+        Description = "API for events management - Event+ - Backend API",
         Contact = new OpenApiContact
         {
             Name = "Gustavo, the creator",
@@ -109,14 +109,13 @@ app.UseSwaggerUI(options =>
 //Finaliza a configuração do Swagger
 
 //Adiciona mapeamento dos Controllers
-app.MapControllers();
-
-//Adiciona autenticação
-app.UseAuthentication();
-
-//Adiciona autorização
-app.UseAuthorization();
 
 app.UseHttpsRedirection();
+//Adiciona autenticação
+app.UseAuthorization();
+
+app.UseAuthentication();
+
+app.MapControllers();
 
 app.Run();

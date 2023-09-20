@@ -12,7 +12,7 @@ namespace webapi.event_.tarde.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Produces("applications/json")]
+    [Produces("application/json")]
     public class LoginController : ControllerBase
     {
         private readonly IUsuarioRepository _usuarioRepository;
@@ -31,61 +31,38 @@ namespace webapi.event_.tarde.Controllers
 
                 if (usuarioBuscado == null)
                 {
-                    return NotFound("Email ou senha inválidos. Tente novamente!");
+                    return StatusCode(401, "Email ou senha inválidos!");
                 }
 
-                // Caso encontre o usuário buscado, prossegue para a criação do Token.
-
-                // 1 - Definir as informações ( Claims ) que serão fornecidos no Token ( Payload ):
                 var claims = new[]
-                {
-                    // Formato da claim ( Tipo, valor ).
-                    new Claim(JwtRegisteredClaimNames.Jti, usuarioBuscado.IdUsuario.ToString()),
+                {                    
                     new Claim(JwtRegisteredClaimNames.Email, usuarioBuscado.Email!),
-                    new Claim(ClaimTypes.Role, usuarioBuscado.IdTipoUsuario.ToString()),
-    
-
-                    // Existe a possibilidade de criar uma claim personalizada.
-                    new Claim("Claim Personalziada", "Valor Personalizado")
+                    new Claim(JwtRegisteredClaimNames.Name, usuarioBuscado.Nome!),
+                    new Claim(JwtRegisteredClaimNames.Jti, usuarioBuscado.IdUsuario.ToString()),
+                    new Claim(ClaimTypes.Role, usuarioBuscado.TipoUsuario!.Titulo!),    
                 };
-
-                // 2 - Definir a chave de acesso ao Token:
-                var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("event.chave.autenticacao-webapi-dev"));
-
-
-                // 3 - Definir as credenciais do Token ( Header ):
+               
+                var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("projeto-event-webapi-chave-autenticacao-ef"));
+               
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                // 4 - Gerar o token:
+               
                 var token = new JwtSecurityToken
-                (
-
-                // Emissor do token:
-                issuer: "webapi.event+.tarde",
-
-                // Destinatário:
-                audience: "webapi.event+.tarde",
-
-                //Dados definidos nas claims:
-                claims: claims,
-
-                // Tempo de expiração:
-                expires: DateTime.Now.AddMinutes(5),
-
-                // Credênciais do Token:
+                (               
+                issuer: "webapi.event+.tarde",                
+                audience: "webapi.event+.tarde",                
+                claims: claims,               
+                expires: DateTime.Now.AddMinutes(5),               
                 signingCredentials: creds
-
                 );
 
-                // 5 - Retornar o token criado:
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                 });
             }
-            catch (Exception erro)
+            catch (Exception e)
             {
-                return BadRequest(erro.Message);
+                return BadRequest(e.Message);
 
             }
         }
