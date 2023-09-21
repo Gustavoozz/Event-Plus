@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using webapi.event_.tarde.Domains;
 using webapi.event_.tarde.Interfaces;
 using webapi.event_.tarde.Repositories;
+using webapi_event__tarde.Repositories;
 
 namespace webapi.event_.tarde.Controllers
 {

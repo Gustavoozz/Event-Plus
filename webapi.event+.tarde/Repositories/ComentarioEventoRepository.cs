@@ -2,7 +2,7 @@
 using webapi.event_.tarde.Domains;
 using webapi.event_.tarde.Interfaces;
 
-namespace webapi.event_.tarde.Repositories
+namespace webapi_event__tarde.Repositories
 {
     public class ComentarioEventoRepository : IComentarioEventoRepository
     {
@@ -12,34 +12,73 @@ namespace webapi.event_.tarde.Repositories
         {
             _eventContext = new EventContext();
         }
+        public void Atualizar(Guid id, ComentarioEvento comentarioEvento)
+        {
+            ComentarioEvento comentarioEventoBuscado = BuscarPorId(id);
+
+            if (comentarioEventoBuscado != null)
+            {
+                comentarioEventoBuscado.Descricao = comentarioEvento.Descricao;
+                comentarioEventoBuscado.Exibe = comentarioEvento.Exibe;
+                comentarioEventoBuscado.IdUsuario = comentarioEvento.IdUsuario;
+                comentarioEventoBuscado.IdEvento = comentarioEvento.IdEvento;
+
+                _eventContext.ComentarioEvento.Update(comentarioEventoBuscado);
+
+                _eventContext.SaveChanges();
+            }
+            else
+                return;
+        }
 
         public ComentarioEvento BuscarPorId(Guid id)
         {
-            return _eventContext.ComentarioEvento.FirstOrDefault(a => a.IdComentarioEvento == id)!;
+            try
+            {
+                return _eventContext.ComentarioEvento.Find(id)!;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void Cadastrar(ComentarioEvento comentarioEvento)
         {
-            _eventContext.ComentarioEvento.Add(comentarioEvento);
-
-            _eventContext.SaveChanges();
+            try
+            {
+                _eventContext.ComentarioEvento.Add(comentarioEvento);
+                _eventContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void Deletar(Guid id)
         {
-            ComentarioEvento comentarioEvento = _eventContext.ComentarioEvento.Find(id)!;
-
-            if (comentarioEvento != null)
+            try
             {
-                _eventContext.ComentarioEvento.Remove(comentarioEvento);
+                _eventContext.ComentarioEvento.Remove(BuscarPorId(id));
+                _eventContext.SaveChanges();
             }
-
-            _eventContext.SaveChanges();
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public List<ComentarioEvento> Listar()
         {
-            return _eventContext.ComentarioEvento.ToList();
+            try
+            {
+                return _eventContext.ComentarioEvento.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
