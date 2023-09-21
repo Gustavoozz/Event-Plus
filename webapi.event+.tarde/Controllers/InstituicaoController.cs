@@ -18,6 +18,21 @@ namespace webapi.event_.tarde.Controllers
             _instituicaoRepository = new InstituicaoRepository();
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            try
+            {
+
+                return Ok(_instituicaoRepository.ListarTodos());
+            }
+            catch (Exception erro)
+            {
+
+                return BadRequest(erro.Message);
+            }
+        }
+
         [HttpPost]
         public IActionResult Post(Instituicao instituicao)
         {

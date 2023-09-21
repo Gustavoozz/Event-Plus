@@ -18,7 +18,7 @@ namespace webapi.event_.tarde.Repositories
             try
             {
                 _eventContext.Instituicao.Add(instituicao);
-
+                    
                 _eventContext.SaveChanges();
             }
             catch (Exception)
@@ -26,6 +26,11 @@ namespace webapi.event_.tarde.Repositories
 
                 throw;
             }
+        }
+
+        public List<Instituicao> ListarTodos()
+        {
+            return _eventContext.Instituicao.ToList();
         }
     }
 }
