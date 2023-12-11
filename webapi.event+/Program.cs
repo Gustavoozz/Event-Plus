@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Azure.CognitiveServices.ContentModerator;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Reflection;
@@ -70,8 +71,8 @@ builder.Services.AddSwaggerGen(options =>
             Url = new Uri("https://github.com/senai-desenvolvimento")
         }
 
-        
-});
+
+    });
 
     options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
@@ -117,6 +118,14 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod();
         });
+});
+
+
+// Habilita o serviço de moderador de conteúdo do Azure.
+builder.Services.AddSingleton(provider => new ContentModeratorClient(
+        new ApiKeyServiceClientCredentials("87434789dfc6435d874ca6b48d17ab5b"))
+{
+    Endpoint = "https://eventcontentmoderatorgustavo.cognitiveservices.azure.com/"
 });
 
 var app = builder.Build();
